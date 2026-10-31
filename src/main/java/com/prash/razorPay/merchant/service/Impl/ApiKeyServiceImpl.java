@@ -3,6 +3,7 @@ package com.prash.razorPay.merchant.service.Impl;
 import com.prash.razorPay.common.exception.ResourceNotFoundException;
 import com.prash.razorPay.common.util.HashUtil;
 import com.prash.razorPay.common.util.RandomizerUtil;
+import com.prash.razorPay.merchant.cache.ApiKeyCache;
 import com.prash.razorPay.merchant.dto.request.CreateApiKeyRequest;
 import com.prash.razorPay.merchant.dto.response.ApiKeyCreateResponse;
 import com.prash.razorPay.merchant.dto.response.ApiKeyResponse;
@@ -33,6 +34,7 @@ public class ApiKeyServiceImpl implements ApiKeyService {
     private final MerchantRepository merchantRepository;
     private final ApiKeyRepository apiKeyRepository;
     private final ApiKeyMapper apiKeyMapper;
+    private final ApiKeyCache apiKeyCache;
 
 
     @Override
@@ -72,6 +74,8 @@ public class ApiKeyServiceImpl implements ApiKeyService {
                 .filter(k -> k.getMerchant().getId().equals(merchantId))
                 .orElseThrow(() -> new ResourceNotFoundException("ApiKey", keyId));
 
+        apiKeyCache.evict(apiKey.getKeyId());
+
         apiKey.setEnabled(false);
         apiKeyRepository.save(apiKey);
 
@@ -92,6 +96,7 @@ public class ApiKeyServiceImpl implements ApiKeyService {
         apiKey.setGracePeriodExpiresAt(LocalDateTime.now().plusHours(24));
 
         ApiKey save = apiKeyRepository.save(apiKey);
+        apiKeyCache.evict(apiKey.getKeyId());
 
         //we are not using MapStruct here because we need provide the Raw secret
         return new ApiKeyCreateResponse(apiKey.getId(),apiKey.getKeyId(),newSecretHash,apiKey.getEnvironment());

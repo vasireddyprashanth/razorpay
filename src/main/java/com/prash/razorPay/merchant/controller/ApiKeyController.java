@@ -9,6 +9,7 @@ import com.prash.razorPay.merchant.security.util.AuthenticatedMerch;
 import com.prash.razorPay.merchant.security.util.JwtUtil;
 import com.prash.razorPay.merchant.service.ApiKeyService;
 import jakarta.validation.Valid;
+import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

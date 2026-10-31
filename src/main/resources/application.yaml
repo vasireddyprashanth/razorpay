@@ -19,8 +19,8 @@ spring:
     type: redis
   data:
     redis:
-      host:
-      port:
+      host: ${REDIS_HOST:gleeful-pacific-aunt-85121.db.redis.io}
+      port: ${REDIS_PORT:10071}
       password:
       ssl:
         enabled: false
